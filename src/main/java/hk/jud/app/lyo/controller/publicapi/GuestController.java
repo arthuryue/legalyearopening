@@ -49,4 +49,14 @@ public class GuestController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping("/email/{email}")
+    public ResponseEntity<GuestDto> getGuestByEmail(@PathVariable String email) {
+        try {
+            GuestDto guestDto = guestService.findGuestByEmail(email);
+            return ResponseEntity.ok(guestDto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +28,18 @@ public class GuestService {
         this.guestRepository = guestRepository;
     }
 
+    public GuestDto findGuestByEmail(String email) {
+        Optional<Guest> guest = guestRepository.findByEmail(email);
+        if (guest.isEmpty()) {
+            throw new EntityNotFoundException("Guest not found with email: " + email);
+        }
+        GuestDto dto = new GuestDto();
+        dto.setName(guest.get().getName());
+        dto.setEmailAddr(guest.get().getEmailAddr());
+        return dto;
+    }
+    
+    
     public GuestDto getGuestByUid(String uid) {
     	logger.info("Fetching guest with UID: {}", uid);
     	
