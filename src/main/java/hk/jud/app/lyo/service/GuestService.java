@@ -5,16 +5,19 @@ import hk.jud.app.lyo.dto.GuestQrCodeDto;
 import hk.jud.app.lyo.entity.Guest;
 import hk.jud.app.lyo.repository.GuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
+import java.util.UUID;
+import java.util.List;
 
 @Service
 public class GuestService {
@@ -29,7 +32,7 @@ public class GuestService {
     }
 
     public GuestDto findGuestByEmail(String email) {
-        Optional<Guest> guest = guestRepository.findByEmail(email);
+        Optional<Guest> guest = guestRepository.findByEmailAddr(email);
         if (guest.isEmpty()) {
             throw new EntityNotFoundException("Guest not found with email: " + email);
         }
@@ -66,4 +69,39 @@ public class GuestService {
                 qrCodeDto
         );
     }
+    
+
+ 
+    public Page<Guest> getAllGuests(PageRequest pageRequest) {
+        return guestRepository.findAll(pageRequest);
+    }
+    public List<Guest> searchGuests(String query) {
+        return guestRepository.searchGuests(query);
+    }
+
+    public Guest createGuest(Guest guest) {
+        //guest.setUid(UUID.randomUUID().toString());
+        guest.setLastUpdateId(getCurrentUsername());
+        return guestRepository.save(guest);
+    }
+
+    public Guest updateGuest(UUID id, Guest guest) {
+        Guest existing = guestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Guest not found"));
+        existing.setName(guest.getName());
+        existing.setEmailAddr(guest.getEmailAddr());
+        existing.setRsvpType(guest.getRsvpType());
+        existing.setLastUpdateId(getCurrentUsername());
+        return guestRepository.save(existing);
+    }
+
+    private String getCurrentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+	public Guest getGuestById(UUID id) {
+		 Guest guest = guestRepository.findById(id)
+	                .orElseThrow(() -> new IllegalArgumentException("Guest not found"));
+		return guest;
+	}
 }

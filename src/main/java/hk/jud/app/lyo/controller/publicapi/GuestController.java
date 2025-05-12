@@ -17,29 +17,6 @@ public class GuestController {
 
 
 
-    /**
-     * Retrieves guest information by UID.
-     *
-     * @param uid The unique identifier of the guest
-     * @return ResponseEntity containing GuestDto or 404 if not found
-     *
-     * Example response:
-     * ```json
-     * {
-     *     "uid": "sample-uid",
-     *     "name": "John Doe",
-     *     "emailAddr": "john.doe@example.com",
-     *     "rsvpType": "ATTENDING",
-     *     "lastUpdateId": "system",
-     *     "lastUpdateTime": "2025-05-08T14:30:45",
-     *     "guestQrCode": {
-     *         "qrCode": "qr123",
-     *         "qrCode2": null,
-     *         "activeInd": "Y"
-     *     }
-     * }
-     * ```
-     */
     @GetMapping("/{uid}")
     public ResponseEntity<GuestDto> getGuestByUid(@PathVariable String uid) {
         try {

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest Management</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <h2>Guest Management</h2>
+    <a th:href="@{/admin/guests/new}" class="btn btn-primary mb-3">Add New Guest</a>
+    <form th:action="@{/admin/guests/search}" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="query" class="form-control" placeholder="Search by name or email" th:value="${query}">
+            <button type="submit" class="btn btn-outline-secondary">Search</button>
+        </div>
+    </form>
+    <div th:if="${guests.empty}" class="alert alert-info">
+        No guests found.
+    </div>
+    <table class="table" th:unless="${guests.empty}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>RSVP Type</th>
+            <th>UID</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="guest : ${guests}">
+            <td th:text="${guest.name}"></td>
+            <td th:text="${guest.emailAddr}"></td>
+            <td th:text="${guest.rsvpType}"></td>
+            <td th:text="${guest.uid}"></td>
+            <td>
+                <a th:href="@{/admin/guests/edit/{id}(id=${guest.guestIntSeq})}" class="btn btn-sm btn-warning">Edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:class="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/guests(page=${currentPage - 1}, query=${query})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:class="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/admin/guests(page=${i}, query=${query})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:class="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/guests(page=${currentPage + 1}, query=${query})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+    <a href="/logout" class="btn btn-danger">Logout</a>
+</div>
+<script src="/js/bootstrap.bundle.js"></script>
+</body>
+</html>

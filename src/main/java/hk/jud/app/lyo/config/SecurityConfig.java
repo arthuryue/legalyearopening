@@ -30,10 +30,22 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll() 
+                .requestMatchers("/login", "/resources/**", "/css/**", "/js/**", "test/**").permitAll()
+                .requestMatchers("/api/admin/**","/admin/**").hasRole("ADMIN")
+                //.requestMatchers("/h2-console/**").permitAll() 
                 //.requestMatchers("/api/users/**").permitAll()
                 .anyRequest().authenticated()
             )
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/admin/guests")
+                    .permitAll()
+                )
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .maximumSessions(1)
+                    .expiredUrl("/login?expired")
+                )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         
         // Allow H2 console to work with frames (required for H2 console UI)

@@ -21,8 +21,10 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserService userService;
 
-
-
+    @GetMapping("/test")
+    public String showLoginPage() {
+        return "login"; // Resolves to src/main/resources/templates/login.html
+    }
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody Apiuser user) {
         Authentication authentication = authenticationManager.authenticate(

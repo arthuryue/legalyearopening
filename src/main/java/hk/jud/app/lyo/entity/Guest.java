@@ -4,6 +4,7 @@ package hk.jud.app.lyo.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,6 +19,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -36,9 +39,10 @@ public class Guest {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "guest_int_seq")
-	private Long guestIntSeq;
+	//@GeneratedValueatedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
+	@Column(name = "guest_int_seq", columnDefinition="BINARY(16)")
+	private UUID guestIntSeq;
 
 	@NotNull
 	@Column(name = "uid", unique= true, nullable = false)
@@ -65,5 +69,15 @@ public class Guest {
 
 	@OneToOne(mappedBy = "guest")
 	private GuestQrCode guestQrCode;
+	
+	   @PrePersist
+	    protected void onCreate() {
+	        lastUpdateTime = LocalDateTime.now();
+	    }
+
+	    @PreUpdate
+	    protected void onUpdate() {
+	        lastUpdateTime = LocalDateTime.now();
+	    }
 }
 

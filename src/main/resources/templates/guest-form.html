@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add/Edit Guest</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 th:text="${guest.guestIntSeq} ? 'Edit Guest' : 'Add New Guest'"></h2>
+    <form th:action="@{/admin/guests}" th:object="${guest}" method="post">
+        <input type="hidden" th:field="*{guestIntSeq}" />
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+        </div>
+        <div class="mb-3">
+            <label for="emailAddr" class="form-label">Email</label>
+            <input type="email" class="form-control" id="emailAddr" th:field="*{emailAddr}" required>
+        </div>
+        <div class="mb-3">
+            <label for="rsvpType" class="form-label">RSVP Type</label>
+            <select class="form-select" id="rsvpType" th:field="*{rsvpType}" required>
+                <option value="">Select RSVP Type</option>
+                <option value="ATTENDING">Attending</option>
+                <option value="NOT_ATTENDING">Not Attending</option>
+                <option value="PENDING">Pending</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="uid" class="form-label">UID</label>
+            <input type="text" class="form-control" id="uid" th:field="*{uid}">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/admin/guests}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+<script src="/js/bootstrap.bundle.js"></script>
+</body>
+</html>
